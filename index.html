@@ -235,11 +235,11 @@
 
             // Options for html2pdf
             const options = {
-                margin: 1,
+                margin: [0, 0, 0, 0], // No margin
                 filename: 'MK_Digital_Business_Card.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set format to A4
             };
 
             // Generate PDF with all content
@@ -248,4 +248,3 @@
     </script>
 </body>
 </html>
-
