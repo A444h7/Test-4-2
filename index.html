@@ -182,7 +182,8 @@
         <!-- Button Container -->
         <div class="button-container">
             <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:Eyouel Mebratu%0AEMAIL:eyouelmebratuinbox@gmail.com%0ATEL:+251963148584%0AURL:https://a444h7.github.io/Mk-7/%0AEND:VCARD" class="save-contact-btn" download="Eyouel_Mebratu.vcf">Save to Contact</a>
-            <button class="download-btn" onclick="downloadPDF()">Download</button>
+            <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+            <button class="download-btn" onclick="downloadTextOnlyPDF()">Download Text Only PDF</button>
         </div>
     </div>
 
@@ -220,46 +221,73 @@
 
     <script>
         function downloadPDF() {
-            const element = document.getElementById('business-card-content'); // Capture only the business card section
+            const element = document.getElementById('business-card-content');
             html2canvas(element, {
                 scale: 3, // Increased resolution for higher quality
-                useCORS: true // Enable cross-origin for external images
+                useCORS: true // Allow cross-origin images
             }).then(function (canvas) {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4'); // Create PDF in portrait, millimeters, A4 format
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
-                const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate proportional height
-                let heightLeft = imgHeight;
-                let position = 0;
+                const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4 size
+                const imgWidth = 210;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                // Add image to the first page
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                // Add the image to the PDF
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
 
-                // Add additional pages if necessary
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
+                // Set white background
+                pdf.setFillColor(255, 255, 255); // White color
+                pdf.rect(0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height, 'F');
 
-                // Add clickable
-                // Add clickable links in the PDF
-                pdf.text('Phone: +251963148584', 10, 10, { link: 'tel:+251963148584' });
-                pdf.text('Email: eyouelmebratuinbox@gmail.com', 10, 20, { link: 'mailto:eyouelmebratuinbox@gmail.com' });
-                pdf.text('Telegram: https://t.me/Eyouel_Mebratu_inbox', 10, 30, { link: 'https://t.me/Eyouel_Mebratu_inbox' });
-                pdf.text('Facebook: https://www.facebook.com/eyouelmebratuinbox', 10, 40, { link: 'https://www.facebook.com/eyouelmebratuinbox' });
-                pdf.text('Instagram: https://www.instagram.com/eyouelmebratu_inbox', 10, 50, { link: 'https://www.instagram.com/eyouelmebratu_inbox' });
-                pdf.text('WhatsApp: https://wa.me/251963148584', 10, 60, { link: 'https://wa.me/251963148584' });
-                pdf.text('Snapchat: https://www.snapchat.com/add/eyouelmebrau', 10, 70, { link: 'https://www.snapchat.com/add/eyouelmebrau' });
-                pdf.text('X: https://x.com/EyouelMebratu', 10, 80, { link: 'https://x.com/EyouelMebratu' });
-                pdf.text('YouTube: https://www.youtube.com/@EyouelMebratuInbox', 10, 90, { link: 'https://www.youtube.com/@EyouelMebratuInbox' });
-                pdf.text('TikTok: https://www.tiktok.com/@eyouel.mebratu.inbox', 10, 100, { link: 'https://www.tiktok.com/@eyouel.mebratu.inbox' });
+                //
+                // Set white background
+                pdf.setFillColor(255, 255, 255); // White color
+                pdf.rect(0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height, 'F');
 
+                // Add clickable text links in the PDF
+                const linkYPosition = imgHeight + 10; // Adjust Y position for links
+                pdf.link(15, linkYPosition, 180, 10, { url: 'https://t.me/Eyouel_Mebratu_inbox' });
+                pdf.link(15, linkYPosition + 10, 180, 10, { url: 'https://www.facebook.com/eyouelmebratuinbox' });
+                pdf.link(15, linkYPosition + 20, 180, 10, { url: 'https://www.instagram.com/eyouelmebratu_inbox' });
+                pdf.link(15, linkYPosition + 30, 180, 10, { url: 'https://wa.me/251963148584' });
+                pdf.link(15, linkYPosition + 40, 180, 10, { url: 'https://www.snapchat.com/add/eyouelmebrau' });
+                pdf.link(15, linkYPosition + 50, 180, 10, { url: 'https://x.com/EyouelMebratu' });
+                pdf.link(15, linkYPosition + 60, 180, 10, { url: 'https://www.youtube.com/@EyouelMebratuInbox' });
+                pdf.link(15, linkYPosition + 70, 180, 10, { url: 'https://www.tiktok.com/@eyouel.mebratu.inbox' });
+
+                // Add a clickable phone number
+                pdf.textWithLink('Phone: +251963148584', 15, linkYPosition + 80, { url: 'tel:+251963148584' });
+
+                // Add a clickable email address
+                pdf.textWithLink('Email: eyouelmebratuinbox@gmail.com', 15, linkYPosition + 90, { url: 'mailto:eyouelmebratuinbox@gmail.com' });
+
+                // Save the PDF
                 pdf.save('MK_Digital_Business_Card.pdf');
             });
+        }
+
+        function downloadTextOnlyPDF() {
+            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4 size
+            pdf.setFontSize(16);
+            pdf.setTextColor(0, 0, 0); // Set text color to black
+            pdf.setFillColor(255, 255, 255); // Set background color to white
+            pdf.rect(0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height, 'F'); // Fill background
+
+            // Add text content
+            pdf.text('Eyouel Mebratu', 15, 20);
+            pdf.text('Phone: +251963148584', 15, 30);
+            pdf.text('Email: eyouelmebratuinbox@gmail.com', 15, 40);
+            pdf.text('Connect with me:', 15, 50);
+            pdf.text('Telegram: https://t.me/Eyouel_Mebratu_inbox', 15, 60);
+            pdf.text('Facebook: https://www.facebook.com/eyouelmebratuinbox', 15, 70);
+            pdf.text('Instagram: https://www.instagram.com/eyouelmebratu_inbox', 15, 80);
+            pdf.text('WhatsApp: https://wa.me/251963148584', 15, 90);
+            pdf.text('Snapchat: https://www.snapchat.com/add/eyouelmebrau', 15, 100);
+            pdf.text('X: https://x.com/EyouelMebratu', 15, 110);
+            pdf.text('YouTube: https://www.youtube.com/@EyouelMebratuInbox', 15, 120);
+            pdf.text('TikTok: https://www.tiktok.com/@eyouel.mebratu.inbox', 15, 130);
+
+            // Save the PDF
+            pdf.save('MK_Digital_Business_Card_Text_Only.pdf');
         }
     </script>
 
