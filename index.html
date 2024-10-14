@@ -1,10 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MK Digital Business Card - Eyouel Mebratu</title>
-    <meta name="description" content="Digital business card for Eyouel Mebratu, showcasing contact information and social media links.">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Athena:wght@400&display=swap');
 
@@ -186,6 +185,7 @@
             <button class="download-btn" onclick="downloadPDF()">Download</button>
         </div>
     </div>
+
     <!-- Bottom Half -->
     <div class="bottom-half">
         <a href="https://t.me/Eyouel_Mebratu_inbox">
@@ -222,7 +222,7 @@
         function downloadPDF() {
             const element = document.getElementById('business-card-content'); // Capture only the business card section
             html2canvas(element, {
-                scale: 4, // Increase resolution
+                scale: 3, // Increased resolution for higher quality
                 useCORS: true // Enable cross-origin for external images
             }).then(function (canvas) {
                 const imgData = canvas.toDataURL('image/png');
@@ -233,9 +233,11 @@
                 let heightLeft = imgHeight;
                 let position = 0;
 
+                // Add image to the first page
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
 
+                // Add additional pages if necessary
                 while (heightLeft >= 0) {
                     position = heightLeft - imgHeight;
                     pdf.addPage();
@@ -243,18 +245,18 @@
                     heightLeft -= pageHeight;
                 }
 
-                // Add functional links
-                pdf.setTextColor(0, 0, 0); // Set text color to black
+                // Add clickable
+                // Add clickable links in the PDF
                 pdf.text('Phone: +251963148584', 10, 10, { link: 'tel:+251963148584' });
                 pdf.text('Email: eyouelmebratuinbox@gmail.com', 10, 20, { link: 'mailto:eyouelmebratuinbox@gmail.com' });
-                pdf.text('Telegram', 10, 30, { link: 'https://t.me/Eyouel_Mebratu_inbox' });
-                pdf.text('Facebook', 10, 40, { link: 'https://www.facebook.com/eyouelmebratuinbox' });
-                pdf.text('Instagram', 10, 50, { link: 'https://www.instagram.com/eyouelmebratu_inbox?igsh=b2g4MXJsZ3c5' });
-                pdf.text('WhatsApp', 10, 60, { link: 'https://wa.me/251963148584' });
-                pdf.text('Snapchat', 10, 70, { link: 'https://www.snapchat.com/add/eyouelmebrau?share_id=lF1RQN9M4UA&locale=en-GB' });
-                pdf.text('X', 10, 80, { link: 'https://x.com/EyouelMebratu?t=aYLD5KWjGSb0QIzb9AACsA&s=09' });
-                pdf.text('YouTube', 10, 90, { link: 'https://www.youtube.com/@EyouelMebratuInbox' });
-                pdf.text('TikTok', 10, 100, { link: 'https://www.tiktok.com/@eyouel.mebratu.inbox?_t=8qErFXrH3P4&_r=1' });
+                pdf.text('Telegram: https://t.me/Eyouel_Mebratu_inbox', 10, 30, { link: 'https://t.me/Eyouel_Mebratu_inbox' });
+                pdf.text('Facebook: https://www.facebook.com/eyouelmebratuinbox', 10, 40, { link: 'https://www.facebook.com/eyouelmebratuinbox' });
+                pdf.text('Instagram: https://www.instagram.com/eyouelmebratu_inbox', 10, 50, { link: 'https://www.instagram.com/eyouelmebratu_inbox' });
+                pdf.text('WhatsApp: https://wa.me/251963148584', 10, 60, { link: 'https://wa.me/251963148584' });
+                pdf.text('Snapchat: https://www.snapchat.com/add/eyouelmebrau', 10, 70, { link: 'https://www.snapchat.com/add/eyouelmebrau' });
+                pdf.text('X: https://x.com/EyouelMebratu', 10, 80, { link: 'https://x.com/EyouelMebratu' });
+                pdf.text('YouTube: https://www.youtube.com/@EyouelMebratuInbox', 10, 90, { link: 'https://www.youtube.com/@EyouelMebratuInbox' });
+                pdf.text('TikTok: https://www.tiktok.com/@eyouel.mebratu.inbox', 10, 100, { link: 'https://www.tiktok.com/@eyouel.mebratu.inbox' });
 
                 pdf.save('MK_Digital_Business_Card.pdf');
             });
