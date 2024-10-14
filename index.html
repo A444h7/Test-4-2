@@ -1,18 +1,18 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MK Digital Business Card - Eyouel Mebratu</title>
+    <meta name="description" content="Digital business card for Eyouel Mebratu, showcasing contact information and social media links.">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Athena:wght@400&display=swap'); /* Importing Athena font */
+        @import url('https://fonts.googleapis.com/css2?family=Athena:wght@400&display=swap');
 
         body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
 
-        /* Header styling */
         .header {
             background-color: #3944BC;
             color: white;
@@ -48,7 +48,6 @@
             text-decoration: underline;
         }
 
-        /* Top half styling */
         .top-half {
             background-color: #3944BC;
             color: white;
@@ -74,9 +73,7 @@
             margin: 0;
         }
 
-        /* Button styling */
-        .save-contact-btn,
-        .download-btn {
+        .save-contact-btn, .download-btn {
             background-color: #28a745;
             color: white;
             padding: 10px 20px;
@@ -88,13 +85,11 @@
             cursor: pointer;
         }
 
-        .save-contact-btn:hover,
-        .download-btn:hover {
+        .save-contact-btn:hover, .download-btn:hover {
             background-color: #218838;
             opacity: 0.7;
         }
 
-        /* Bottom half styling */
         .bottom-half {
             background-color: white;
             height: 60vh;
@@ -124,10 +119,7 @@
             text-decoration: underline;
         }
 
-        .bottom-half .telegram, 
-        .bottom-half .whatsapp, 
-        .bottom-half .tiktok, 
-        .bottom-half .snapchat {
+        .bottom-half .telegram, .whatsapp, .tiktok, .snapchat {
             width: 27.6px;
             height: 27.6px;
         }
@@ -141,14 +133,13 @@
             text-decoration: none;
         }
 
-        /* Phone number without underline */
         .phone-number {
             color: white;
             font-size: 20px;
             font-weight: bold;
             margin: 10px 0;
             cursor: pointer;
-            text-decoration: none; /* No underline */
+            text-decoration: none;
         }
 
         .email-link img {
@@ -159,11 +150,10 @@
             border: none;
         }
 
-        /* Button container and alignment */
         .button-container {
             display: flex;
             justify-content: center;
-            margin-top: -10px; /* Moves buttons up */
+            margin-top: -10px;
         }
     </style>
 </head>
@@ -171,7 +161,7 @@
 
     <!-- Header with company logo and name -->
     <div class="header">
-        <img src="company-logo.png" alt="MK Logo"> <!-- Replace with your logo file -->
+        <img src="company-logo.png" alt="MK Logo">
         <div class="company-name">
             <a href="#">MK <span class="digital-business-card">Digital Business Card</span></a>
         </div>
@@ -182,7 +172,7 @@
         <img src="your-picture.jpg" alt="Your Picture">
         <h1>Eyouel Mebratu</h1>
 
-        <!-- Phone number link (no underline, opens dialer) -->
+        <!-- Phone number link -->
         <a href="tel:+251963148584" class="phone-number">Phone: +251963148584</a>
 
         <!-- Email link -->
@@ -192,13 +182,10 @@
 
         <!-- Button Container -->
         <div class="button-container">
-            <!-- Button to Save to Contacts (opens vCard) -->
             <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:Eyouel Mebratu%0AEMAIL:eyouelmebratuinbox@gmail.com%0ATEL:+251963148584%0AURL:https://a444h7.github.io/Mk-7/%0AEND:VCARD" class="save-contact-btn" download="Eyouel_Mebratu.vcf">Save to Contact</a>
-            <!-- Download button to generate PDF -->
             <button class="download-btn" onclick="downloadPDF()">Download</button>
         </div>
     </div>
-
     <!-- Bottom Half -->
     <div class="bottom-half">
         <a href="https://t.me/Eyouel_Mebratu_inbox">
@@ -227,24 +214,52 @@
         </a>
     </div>
 
-    <!-- Include html2pdf.js from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <!-- Include html2canvas and jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
     <script>
-        async function downloadPDF() {
-            const element = document.body; // Capture the entire body for the PDF
+        function downloadPDF() {
+            const element = document.getElementById('business-card-content'); // Capture only the business card section
+            html2canvas(element, {
+                scale: 4, // Increase resolution
+                useCORS: true // Enable cross-origin for external images
+            }).then(function (canvas) {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4'); // Create PDF in portrait, millimeters, A4 format
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate proportional height
+                let heightLeft = imgHeight;
+                let position = 0;
 
-            // Options for html2pdf
-            const options = {
-                margin: [0, 0, 0, 0], // No margin
-                filename: 'MK_Digital_Business_Card.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set format to A4
-            };
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
 
-            // Generate PDF with all content
-            html2pdf().from(element).set(options).save();
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // Add functional links
+                pdf.setTextColor(0, 0, 0); // Set text color to black
+                pdf.text('Phone: +251963148584', 10, 10, { link: 'tel:+251963148584' });
+                pdf.text('Email: eyouelmebratuinbox@gmail.com', 10, 20, { link: 'mailto:eyouelmebratuinbox@gmail.com' });
+                pdf.text('Telegram', 10, 30, { link: 'https://t.me/Eyouel_Mebratu_inbox' });
+                pdf.text('Facebook', 10, 40, { link: 'https://www.facebook.com/eyouelmebratuinbox' });
+                pdf.text('Instagram', 10, 50, { link: 'https://www.instagram.com/eyouelmebratu_inbox?igsh=b2g4MXJsZ3c5' });
+                pdf.text('WhatsApp', 10, 60, { link: 'https://wa.me/251963148584' });
+                pdf.text('Snapchat', 10, 70, { link: 'https://www.snapchat.com/add/eyouelmebrau?share_id=lF1RQN9M4UA&locale=en-GB' });
+                pdf.text('X', 10, 80, { link: 'https://x.com/EyouelMebratu?t=aYLD5KWjGSb0QIzb9AACsA&s=09' });
+                pdf.text('YouTube', 10, 90, { link: 'https://www.youtube.com/@EyouelMebratuInbox' });
+                pdf.text('TikTok', 10, 100, { link: 'https://www.tiktok.com/@eyouel.mebratu.inbox?_t=8qErFXrH3P4&_r=1' });
+
+                pdf.save('MK_Digital_Business_Card.pdf');
+            });
         }
     </script>
+
 </body>
 </html>
